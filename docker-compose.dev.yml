@@ -1,0 +1,32 @@
+services:
+  db:
+    image: postgres:16
+    container_name: postgres_pizza
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: order_app
+    ports:
+      - "5432:5432"
+
+  # Contenedor de Laravel
+  app-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dev_pizza
+    depends_on:
+      - db
+    ports:
+      - "8080:8000"
+    environment:
+      DB_CONNECTION: pgsql
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DATABASE: order_app
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      APP_KEY: ${APP_KEY}
+      APP_ENV: local
+      APP_DEBUG: "true"
